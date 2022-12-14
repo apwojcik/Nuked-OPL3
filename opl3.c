@@ -40,6 +40,8 @@
 #define inline		__inline
 #endif
 
+#define OPL_SHARED_LIB_SRC
+
 #include "opl3.h"
 
 #if OPL_ENABLE_STEREOEXT && !defined OPL_SIN
