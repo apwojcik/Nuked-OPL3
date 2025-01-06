@@ -9,3 +9,6 @@ include(GenerateExportHeader)
 
 GENERATE_EXPORT_HEADER(opl3 BASE_NAME OPL EXPORT_FILE_NAME export.h)
 target_include_directories(opl3 PUBLIC ${CMAKE_BINARY_DIR})
+
+install(TARGETS opl3)
+install(FILES ${CMAKE_BINARY_DIR}/export.h opl3.h DESTINATION include/opl3)
