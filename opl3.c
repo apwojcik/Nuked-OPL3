@@ -58,6 +58,121 @@
 
 #define RSM_FRAC    10
 
+#ifndef OPL_ENABLE_STEREOEXT
+#define OPL_ENABLE_STEREOEXT 0
+#endif
+
+#define OPL_WRITEBUF_SIZE   1024
+#define OPL_WRITEBUF_DELAY  2
+
+typedef struct opl3_slot opl3_slot;
+typedef struct opl3_channel opl3_channel;
+
+struct opl3_slot {
+    opl3_channel *channel;
+    opl3_chip *chip;
+    int16_t out;
+    int16_t fbmod;
+    int16_t *mod;
+    int16_t prout;
+    uint16_t eg_rout;
+    uint16_t eg_out;
+    uint8_t eg_inc;
+    uint8_t eg_gen;
+    uint8_t eg_rate;
+    uint8_t eg_ksl;
+    uint8_t *trem;
+    uint8_t reg_vib;
+    uint8_t reg_type;
+    uint8_t reg_ksr;
+    uint8_t reg_mult;
+    uint8_t reg_ksl;
+    uint8_t reg_tl;
+    uint8_t reg_ar;
+    uint8_t reg_dr;
+    uint8_t reg_sl;
+    uint8_t reg_rr;
+    uint8_t reg_wf;
+    uint8_t key;
+    uint32_t pg_reset;
+    uint32_t pg_phase;
+    uint16_t pg_phase_out;
+    uint8_t slot_num;
+};
+
+struct opl3_channel {
+    opl3_slot *slotz[2];/*Don't use "slots" keyword to avoid conflict with Qt applications*/
+    opl3_channel *pair;
+    opl3_chip *chip;
+    int16_t *out[4];
+
+#if OPL_ENABLE_STEREOEXT
+    int32_t leftpan;
+    int32_t rightpan;
+#endif
+
+    uint8_t chtype;
+    uint16_t f_num;
+    uint8_t block;
+    uint8_t fb;
+    uint8_t con;
+    uint8_t alg;
+    uint8_t ksv;
+    uint16_t cha, chb;
+    uint16_t chc, chd;
+    uint8_t ch_num;
+};
+
+typedef struct opl3_writebuf {
+    uint64_t time;
+    uint16_t reg;
+    uint8_t data;
+} opl3_writebuf;
+
+struct opl3_chip {
+    opl3_channel channel[18];
+    opl3_slot slot[36];
+    uint16_t timer;
+    uint64_t eg_timer;
+    uint8_t eg_timerrem;
+    uint8_t eg_state;
+    uint8_t eg_add;
+    uint8_t eg_timer_lo;
+    uint8_t newm;
+    uint8_t nts;
+    uint8_t rhy;
+    uint8_t vibpos;
+    uint8_t vibshift;
+    uint8_t tremolo;
+    uint8_t tremolopos;
+    uint8_t tremoloshift;
+    uint32_t noise;
+    int16_t zeromod;
+    int32_t mixbuff[4];
+    uint8_t rm_hh_bit2;
+    uint8_t rm_hh_bit3;
+    uint8_t rm_hh_bit7;
+    uint8_t rm_hh_bit8;
+    uint8_t rm_tc_bit3;
+    uint8_t rm_tc_bit5;
+
+#if OPL_ENABLE_STEREOEXT
+    uint8_t stereoext;
+#endif
+
+    /* OPL3L */
+    int32_t rateratio;
+    int32_t samplecnt;
+    int16_t oldsamples[4];
+    int16_t samples[4];
+
+    uint64_t writebuf_samplecnt;
+    uint32_t writebuf_cur;
+    uint32_t writebuf_last;
+    uint64_t writebuf_lasttime;
+    opl3_writebuf writebuf[OPL_WRITEBUF_SIZE];
+};
+
 /* Channel types */
 
 enum {
